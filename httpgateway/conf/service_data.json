@@ -1,0 +1,28 @@
+{
+  "demo": {
+      "auths": [
+        "test"
+      ],
+      "secrets": [
+        "12345",
+        "12346"
+      ],
+      "rate_limiting": {
+        "under": 100,
+        "burst": 200
+      }
+  },
+  "test": {
+      "auths": [
+        "demo"
+      ],
+      "secrets": [
+        "1234567",
+        "1234568"
+      ],
+      "rate_limiting": {
+        "under": 100,
+        "burst": 200
+      }
+  }
+}
