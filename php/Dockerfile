@@ -10,8 +10,6 @@ MAINTAINER zhangce zhangce5413@gmail.com
 
 ##################### 常用基础软件 START #####################
 RUN yum install -y net-tools vsftpd vim wget crontabs gcc make openssh-server git && \
- service sshd start && \
- echo "root:Root1.pwd" | chpasswd && \
  yum clean all
 ##################### 常用基础软件 END #####################
 
@@ -27,9 +25,6 @@ RUN chmod +x /etc/init.d/redis && cd /usr/src && \
 ###################### mysql START #####################
 RUN rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm && \
  yum -y install mysql-community-server && \
- service mysqld start && \
- defaultmysqlpwd=`grep 'A temporary password' /var/log/mysqld.log | awk -F"root@localhost: " '{ print $2}' ` && \
- /usr/bin/mysql -uroot -p${defaultmysqlpwd} --connect-expired-password -e "SET PASSWORD = PASSWORD('Root1.pwd');grant all privileges on *.* to root@'%' identified by 'Root1.pwd';" && \
  yum clean all
 ###################### mysql END #####################
 
@@ -92,6 +87,6 @@ COPY conf/php/php-fpm.conf /usr/local/php/etc/
 COPY conf/php/www.conf /usr/local/php/etc/php-fpm.d/
 ###################### php7 END #####################
 
-COPY rc.local /etc/rc.local
-RUN chmod +x /etc/rc.local
-ENTRYPOINT ["/etc/rc.local"]
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]

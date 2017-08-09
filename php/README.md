@@ -13,20 +13,13 @@
 默认root密码为`Root1.pwd`。  
 默认mysql密码为`Root1.pwd`。  
 
-## 构建
-在当前目录执行
-```
-docker build -t gitlab.nw.com:4567/dockerhub/php/image .
-
-docker push gitlab.nw.com:4567/dockerhub/php/image
-```
 
 ### 创建容器
 此命令只作为示例
 ```bash
-docker run -itd --name test gitlab.nw.com:4567/dockerhub/php/image
+docker run -itd --name test ifintech/php-dev
 ```
 
 ### docker hub
 
-> https://hub.docker.com/r/ifintech/php7/
+> https://hub.docker.com/r/ifintech/php-dev/
