@@ -10,13 +10,13 @@ FROM centos:6.8
 MAINTAINER lvyalin lvyalin.yl@gmail.com
 
 ##################### 常用基础软件 START #####################
-RUN yum install -y vsftpd vim wget crontabs gcc make openssh-server git unzip && \
- service sshd start && echo "root:Root1.pwd" | chpasswd &&  yum clean all
+RUN yum install -y vsftpd vim wget crontabs gcc make openssh-server git unzip &&  yum clean all
 ##################### 常用基础软件 END #####################
 
 ##################### 安装java-1.8.0-openjdk-headless #########
 RUN yum install -y java-1.8.0-openjdk && \
- yum install -y java-1.8.0-openjdk-devel.x86_64
+ yum install -y java-1.8.0-openjdk-devel.x86_64 && \
+ yum clean all
 ##################### 安装java-1.8.0-openjdk-headless end #####
 
 ###################### redis START #####################
@@ -31,26 +31,24 @@ RUN chmod +x /etc/init.d/redis && cd /usr/src && \
 ###################### mysql START #####################
 RUN rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm && \
  yum -y install mysql-community-server && \
- service mysqld start && \
- defaultmysqlpwd=`grep 'A temporary password' /var/log/mysqld.log | awk -F"root@localhost: " '{ print $2}' ` && \
- /usr/bin/mysql -uroot -p${defaultmysqlpwd} --connect-expired-password -e "SET PASSWORD = PASSWORD('Root1.pwd');grant all privileges on *.* to root@'%' identified by 'Root1.pwd';" && \
  yum clean all
 ###################### mysql END #####################
 
 ###################### tomcat START ############################
 RUN wget http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.16/bin/apache-tomcat-8.5.16.tar.gz && tar xzf apache-tomcat-8.5.16.tar.gz && \
 mv ./apache-tomcat-8.5.16 /usr/local/apache-tomcat-8.5.16 && \
+sed -i "s/port=\"8080\"/port=\"80\"/g" /usr/local/apache-tomcat-8.5.16/conf/server.xml && \
 rm -f /apache-tomcat-8.5.16.tar.gz
 ###################### tomcat END #################################
 
 ###################### RAP deploy START ############################
-COPY conf/rap/init.sh /root/init.sh
 RUN wget http://rapapi.org/release/RAP-0.14.16-SNAPSHOT.war && \
 mv RAP-0.14.16-SNAPSHOT.war /usr/local/apache-tomcat-8.5.16/webapps/ROOT.war && \
-rm -rf /usr/local/apache-tomcat-8.5.16/webapps/ROOT && \
-chmod +x /root/init.sh
+rm -rf /usr/local/apache-tomcat-8.5.16/webapps/ROOT
 ###################### RAP deploy END ############################
 
-COPY rc.local /etc/rc.local
-RUN chmod +x /etc/rc.local
-CMD ["/etc/rc.local"]
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+CMD ["/bin/bash"]
