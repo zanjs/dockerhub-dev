@@ -11,7 +11,7 @@ MAINTAINER lvyalin lvyalin.yl@gmail.com
 
 ##################### 常用基础软件 START #####################
 RUN yum install -y vsftpd vim wget crontabs gcc make openssh-server git unzip && \
- service sshd start && echo "root:Root1.pwd" | chpasswd &&  yum clean all
+ yum clean all
 ##################### 常用基础软件 END #####################
 
 ##################### 安装java-1.8.0-openjdk-headless #########
@@ -31,9 +31,6 @@ RUN chmod +x /etc/init.d/redis && cd /usr/src && \
 ###################### mysql START #####################
 RUN rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rpm && \
  yum -y install mysql-community-server && \
- service mysqld start && \
- defaultmysqlpwd=`grep 'A temporary password' /var/log/mysqld.log | awk -F"root@localhost: " '{ print $2}' ` && \
- /usr/bin/mysql -uroot -p${defaultmysqlpwd} --connect-expired-password -e "SET PASSWORD = PASSWORD('Root1.pwd');grant all privileges on *.* to root@'%' identified by 'Root1.pwd';" && \
  yum clean all
 ###################### mysql END #####################
 
@@ -50,6 +47,6 @@ ENV PATH=$JAVA_HOME/bin:${PATH}
 COPY conf/maven/settings.xml /opt/maven/conf/settings.xml
 #######################################################
 
-COPY rc.local /etc/rc.local
-RUN chmod +x /etc/rc.local
-CMD ["/etc/rc.local"]
+COPY docker-entrypoint.sh /usr/local/bin/
+
+ENTRYPOINT ["docker-entrypoint.sh"]
