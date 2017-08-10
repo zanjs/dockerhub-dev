@@ -35,16 +35,16 @@ RUN rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-9.noarch.rp
 ###################### mysql END #####################
 
 ###################### tomcat START ############################
-RUN wget http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.16/bin/apache-tomcat-8.5.16.tar.gz && tar xzf apache-tomcat-8.5.16.tar.gz && \
-mv ./apache-tomcat-8.5.16 /usr/local/apache-tomcat-8.5.16 && \
-sed -i "s/port=\"8080\"/port=\"80\"/g" /usr/local/apache-tomcat-8.5.16/conf/server.xml && \
-rm -f /apache-tomcat-8.5.16.tar.gz
+RUN wget http://mirror.bit.edu.cn/apache/tomcat/tomcat-8/v8.5.20/bin/apache-tomcat-8.5.20.tar.gz && tar xzf apache-tomcat-8.5.20.tar.gz && \
+mv ./apache-tomcat-8.5.20 /usr/local/apache-tomcat && \
+sed -i "s/port=\"8080\"/port=\"80\"/g" /usr/local/apache-tomcat/conf/server.xml && \
+rm -f /apache-tomcat-8.5.20.tar.gz
 ###################### tomcat END #################################
 
 ###################### RAP deploy START ############################
 RUN wget http://rapapi.org/release/RAP-0.14.16-SNAPSHOT.war && \
-mv RAP-0.14.16-SNAPSHOT.war /usr/local/apache-tomcat-8.5.16/webapps/ROOT.war && \
-rm -rf /usr/local/apache-tomcat-8.5.16/webapps/ROOT
+mv RAP-0.14.16-SNAPSHOT.war /usr/local/apache-tomcat/webapps/ROOT.war && \
+rm -rf /usr/local/apache-tomcat/webapps/ROOT
 ###################### RAP deploy END ############################
 
 COPY docker-entrypoint.sh /usr/local/bin/
